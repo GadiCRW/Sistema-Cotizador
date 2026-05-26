@@ -1722,11 +1722,14 @@ ${buildQuoteContext()}`;
       {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
-          system_instruction: { parts: [{text: systemPrompt}] },
-          contents: geminiHistory,
-          generationConfig: { temperature: 0.7, maxOutputTokens: 800 },
-        }),
+       body: JSON.stringify({
+  contents: [
+    { role: 'user', parts: [{text: systemPrompt}] },
+    { role: 'model', parts: [{text: 'Entendido, estoy listo para ayudarte con el sistema de cotizaciones.'}] },
+    ...geminiHistory
+  ],
+  generationConfig: { temperature: 0.7, maxOutputTokens: 800 },
+}),
       }
     );
     const data = await res.json();
