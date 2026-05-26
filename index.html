@@ -211,7 +211,7 @@ small{font-size:11px;color:var(--gray-500)}
         <div class="form-grid">
           <div class="field"><label>Fecha</label><input type="date" id="cl_fecha"></div>
           <div class="field"><label>Moneda</label><select id="cl_moneda"><option value="USD">USD — Dólares</option><option value="CRC">CRC — Colones</option><option value="EUR">EUR — Euros</option></select></div>
-          <div class="field"><label>Condiciones de pago</label><select id="cl_pago"><option>Contado</option><option>Crédito 30 días</option><option selected>Crédito 60 días</option><option>Crédito 90 días</option><option>50% adelanto / 50% entrega</option><option>Por negociar</option></select></div>
+          <div class="field"><label>Condiciones de pago</label><input type="text" id="cl_pago" list="pago-options" placeholder="Seleccione o escriba..."><datalist id="pago-options"><option value="Contado"><option value="Crédito 30 días"><option value="Crédito 60 días"><option value="Crédito 90 días"><option value="50% adelanto / 50% entrega"><option value="Por negociar"></datalist></div>
           <div class="field"><label>Lugar de entrega</label><input type="text" id="cl_entrega" placeholder="Ej. Alajuela, San Carlos"></div>
           <div class="field"><label>Plazo de entrega</label><input type="text" id="cl_plazo" placeholder="Ej. 8 – 10 semanas"></div>
           <div class="field"><label>Vigencia de la oferta</label><input type="text" id="cl_vigencia" placeholder="Ej. 4 semanas"></div>
