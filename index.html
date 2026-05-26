@@ -262,7 +262,7 @@ small{font-size:11px;color:var(--gray-500)}
               <th style="width:100px;">Costo unit.</th>
               <th style="width:90px;color:#e8a020;">Nac.+Ship.</th>
               <th style="width:90px;">Total costo</th>
-              <th style="width:80px;text-align:center;">Margen</th>
+              <th style="width:88px;text-align:center;">Margen / %</th>
               <th style="width:100px;">P. venta</th>
               <th style="width:32px;"></th>
             </tr>
@@ -452,6 +452,7 @@ function addItem(preset={}) {
     tipo_unidad: preset.tipo_unidad||'unidad',
     costo: preset.costo||0,
     aplicarMg: preset.aplicarMg !== undefined ? preset.aplicarMg : defaultMg,
+    manualMg: preset.manualMg || null,  // null = usar margen global
   };
   items.push(item);
   renderItems();
@@ -485,13 +486,19 @@ function renderItems() {
         ${UNIT_TYPES.map(u=>`<option value="${u.value}" ${u.value===item.tipo_unidad?'selected':''}>${u.label}</option>`).join('')}
       </select></td>
       <td><input type="number" value="${item.costo}" min="0" step="0.01" onchange="updateItem(${item.id},'costo',parseFloat(this.value)||0)"></td>
-      <td class="td-total" id="cell-nac-${item.id}" style="${nacStyle}">${nacAmt>0?fmtCur(nacAmt):'—'}</td>
+      <td class="td-total" id="cell-nac-${item.id}" style="${nacStyle}" title="${nacAmt>0?'Total nac: '+fmtCur(nacAmt):''}">${nacAmt>0?fmtCur(nacAmt/(item.qty||1))+'/und'+'<br><span style="font-size:10px;font-weight:400;opacity:.7;">Total: '+fmtCur(nacAmt)+'</span>':'—'}</td>
       <td class="td-total" id="cell-costo-${item.id}">${fmtCur(totCosto)}</td>
-      <td style="text-align:center;">
-        <label class="mg-toggle ${item.aplicarMg?'active':''}">
-          <input type="checkbox" ${item.aplicarMg?'checked':''} onchange="updateItem(${item.id},'aplicarMg',this.checked);this.parentElement.classList.toggle('active',this.checked)">
-          <span>${item.aplicarMg?'Sí':'No'}</span>
-        </label>
+      <td style="text-align:center;vertical-align:middle;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+          <label class="mg-toggle ${item.aplicarMg?'active':''}">
+            <input type="checkbox" ${item.aplicarMg?'checked':''} onchange="updateItem(${item.id},'aplicarMg',this.checked);this.parentElement.classList.toggle('active',this.checked)">
+            <span>${item.aplicarMg?'Sí':'No'}</span>
+          </label>
+          ${item.aplicarMg?`<input type="number" placeholder="% global" value="${item.manualMg||''}" min="0" max="500" step="0.5"
+            title="Margen manual (deja vacío para usar el global)"
+            onchange="updateItem(${item.id},'manualMg',this.value===''?null:parseFloat(this.value))"
+            style="width:68px;font-size:11px;padding:3px 5px;border:1.5px solid var(--gray-300);border-radius:4px;text-align:center;font-family:'DM Mono',monospace;background:${item.manualMg!==null&&item.manualMg!==undefined&&item.manualMg!==''?'#fff8e1':'white'};">`:``}
+        </div>
       </td>
       <td class="td-total" style="color:var(--green);" id="cell-venta-${item.id}">${fmtCur(venta)}</td>
       <td><button class="btn btn-danger btn-sm" onclick="removeItem(${item.id})" style="padding:4px 8px;">✕</button></td>
@@ -519,7 +526,15 @@ function calcItemVenta(item,totCosto) {
   const mgS = parseFloat(document.getElementById('mg_seguridad')?.value||0)/100;
   const desc = parseFloat(document.getElementById('mg_descuento')?.value||0)/100;
   let venta = totCosto;
-  if(item.aplicarMg) venta = totCosto*(1+mgG)*(1+mgS)*(1-desc);
+  if(item.aplicarMg) {
+    if(item.manualMg !== null && item.manualMg !== undefined && item.manualMg !== '') {
+      // Manual margin: use it as total markup factor replacing ganancia+seguridad
+      const mg = parseFloat(item.manualMg)/100;
+      venta = totCosto * (1 + mg) * (1 - desc);
+    } else {
+      venta = totCosto*(1+mgG)*(1+mgS)*(1-desc);
+    }
+  }
   return {venta};
 }
 
@@ -534,7 +549,13 @@ function recalcAll() {
     const cn=document.getElementById('cell-nac-'+item.id);
     const ce=document.getElementById('cell-costo-'+item.id);
     const ve=document.getElementById('cell-venta-'+item.id);
-    if(cn){ cn.textContent=nacAmt>0?fmtCur(nacAmt):'—'; cn.style.color=nacAmt>0?'var(--accent)':'var(--gray-400)'; }
+    if(cn){
+      if(nacAmt>0){
+        const perUnit=nacAmt/(item.qty||1);
+        cn.innerHTML=fmtCur(perUnit)+'/und<br><span style="font-size:10px;font-weight:400;opacity:.7;">Total: '+fmtCur(nacAmt)+'</span>';
+        cn.style.color='var(--accent)';
+      } else { cn.textContent='—'; cn.style.color='var(--gray-400)'; }
+    }
     if(ce) ce.textContent=fmtCur(totCosto);
     if(ve) ve.textContent=fmtCur(venta);
   });
@@ -742,7 +763,9 @@ function renderSummary() {
     tr.innerHTML=`<td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(item.desc||'—')}</td>
       <td><span class="rubro-category ${cat?.cls||''}" style="font-size:9px;">${cat?.label||'—'}</span></td>
       <td class="text-right mono">${fmtNum(item.qty)} ${item.tipo_unidad}</td>
-      <td style="text-align:center;font-size:11px;">${item.aplicarMg?'<span style="color:var(--teal);font-weight:600;">Sí</span>':'<span style="color:var(--gray-500);">No</span>'}</td>
+      <td style="text-align:center;font-size:11px;">${item.aplicarMg
+        ? '<span style="color:var(--teal);font-weight:600;">'+(item.manualMg!==null&&item.manualMg!==undefined&&item.manualMg!==''?item.manualMg+'%':'Global')+'</span>'
+        : '<span style="color:var(--gray-500);">No</span>'}</td>
       <td class="td-total">${fmtCur(unitVenta)}</td>
       <td class="td-total">${fmtCur(venta)}</td>`;
     ibody.appendChild(tr);
