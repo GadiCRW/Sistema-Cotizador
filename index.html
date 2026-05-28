@@ -370,7 +370,7 @@ small{font-size:11px;color:var(--gray-500)}
       </div>
     </div>
   </div>
-</div>
+
 
   <!-- STEP 6: HISTORIAL -->
   <div class="section" id="step-6">
@@ -1203,10 +1203,8 @@ function generateWord() {
 <style>
 @page{size:A4;margin:2cm 2.5cm 2cm 2.5cm}
 body{font-family:Arial,sans-serif;font-size:10pt;color:#212529}
-p{margin:0;padding:0;mso-line-height-rule:exactly;line-height:1.2}
-td{mso-cell-special:placeholder;border:none}
+p{margin:0 0 0 0;padding:0}
 table{border-collapse:collapse}
-td p{margin:0;padding:0}
 </style></head><body>
 
 <!-- HEADER: logo left + company info left + Cotización right -->
@@ -1225,34 +1223,34 @@ td p{margin:0;padding:0}
   </tr>
 </table>
 <!-- CLIENT TABLE -->
-<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8pt;border-spacing:0;border-collapse:collapse;">
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:12pt;">
   <tr>
-    <td width="18%" style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">Cliente:</td>
-    <td width="32%" style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;font-size:9pt;border:1pt solid #CED4DA;">${escHtml(v('cl_empresa'))}</td>
-    <td width="20%" style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">N° cotización:</td>
-    <td width="30%" style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;font-size:9pt;font-weight:bold;font-family:Courier New;border:1pt solid #CED4DA;">${escHtml(v('cl_qt_num'))}</td>
+    <td width="18%" style="padding:4pt 7pt;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">Cliente:</td>
+    <td width="32%" style="padding:4pt 7pt;font-size:9pt;border:1pt solid #CED4DA;">${escHtml(v('cl_empresa'))}</td>
+    <td width="20%" style="padding:4pt 7pt;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">N° cotización:</td>
+    <td width="30%" style="padding:4pt 7pt;font-size:9pt;font-weight:bold;font-family:Courier New;border:1pt solid #CED4DA;">${escHtml(v('cl_qt_num'))}</td>
   </tr>
   <tr>
-    <td style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">Contacto:</td>
-    <td style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;font-size:9pt;background:#F8F9FA;border:1pt solid #CED4DA;">${escHtml(v('cl_contacto'))}</td>
-    <td style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">Fecha:</td>
-    <td style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;font-size:9pt;background:#F8F9FA;border:1pt solid #CED4DA;">${formatDate(v('cl_fecha'))}</td>
+    <td style="padding:4pt 7pt;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">Contacto:</td>
+    <td style="padding:4pt 7pt;font-size:9pt;background:#F8F9FA;border:1pt solid #CED4DA;">${escHtml(v('cl_contacto'))}</td>
+    <td style="padding:4pt 7pt;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">Fecha:</td>
+    <td style="padding:4pt 7pt;font-size:9pt;background:#F8F9FA;border:1pt solid #CED4DA;">${formatDate(v('cl_fecha'))}</td>
   </tr>
   <tr>
-    <td style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">Teléfono:</td>
-    <td style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;font-size:9pt;border:1pt solid #CED4DA;">${escHtml(v('cl_telefono'))}</td>
-    <td style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">Cond. de pago:</td>
-    <td style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;font-size:9pt;border:1pt solid #CED4DA;">${escHtml(v('cl_pago'))}</td>
+    <td style="padding:4pt 7pt;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">Teléfono:</td>
+    <td style="padding:4pt 7pt;font-size:9pt;border:1pt solid #CED4DA;">${escHtml(v('cl_telefono'))}</td>
+    <td style="padding:4pt 7pt;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">Cond. de pago:</td>
+    <td style="padding:4pt 7pt;font-size:9pt;border:1pt solid #CED4DA;">${escHtml(v('cl_pago'))}</td>
   </tr>
   <tr>
-    <td style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">e-mail:</td>
-    <td style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;font-size:9pt;background:#F8F9FA;border:1pt solid #CED4DA;">${escHtml(v('cl_email'))}</td>
-    <td style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">Moneda:</td>
-    <td style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;font-size:9pt;background:#F8F9FA;border:1pt solid #CED4DA;">${cur}</td>
+    <td style="padding:4pt 7pt;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">e-mail:</td>
+    <td style="padding:4pt 7pt;font-size:9pt;background:#F8F9FA;border:1pt solid #CED4DA;">${escHtml(v('cl_email'))}</td>
+    <td style="padding:4pt 7pt;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">Moneda:</td>
+    <td style="padding:4pt 7pt;font-size:9pt;background:#F8F9FA;border:1pt solid #CED4DA;">${cur}</td>
   </tr>
   <tr>
-    <td style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">Dirección:</td>
-    <td colspan="3" style="padding:2pt 5pt;line-height:1.1;mso-line-height-rule:exactly;font-size:9pt;border:1pt solid #CED4DA;">${escHtml(v('cl_direccion'))}</td>
+    <td style="padding:4pt 7pt;background:${NAVY};color:white;font-weight:bold;font-size:9pt;border:1pt solid ${NAVY};">Dirección:</td>
+    <td colspan="3" style="padding:4pt 7pt;font-size:9pt;border:1pt solid #CED4DA;">${escHtml(v('cl_direccion'))}</td>
   </tr>
 </table>
 
