@@ -1399,16 +1399,20 @@ async function generateWord() {
   cond_tot.forEach(([cRow, totRow], i) => {
     const isTotal = totRow && totRow[2];
     const condBg = i%2===0 ? 'F8F9FA' : WHITE;
-    footerRows.push(`<w:tr><w:trPr><w:trHeight w:val="${isTotal?480:300}" w:hRule="atLeast"/></w:trPr>
-      ${tc(p(run(cRow[0],{bold:true,sz:8,font:'Arial'}),{before:0,after:0}),{w:C_LBL,bg:condBg})}
-      ${tc(p(run(cRow[1]||'',{sz:8,font:'Arial'}),{before:0,after:0}),{w:C_VAL,bg:WHITE})}
-      ${totRow===null ? `<w:tc><w:tcPr><w:tcW w:w="${C_GAP}" w:type="dxa"/><w:tcBorders><w:top w:val="none" w:sz="0" w:color="auto"/><w:left w:val="none" w:sz="0" w:color="auto"/><w:bottom w:val="none" w:sz="0" w:color="auto"/><w:right w:val="none" w:sz="0" w:color="auto"/></w:tcBorders><w:shd w:val="clear" w:color="FFFFFF" w:fill="FFFFFF"/></w:tcPr><w:p/></w:tc>` : tc(p('',{before:0,after:0}),{w:C_GAP,bg:WHITE,noLeft:true,noRight:true})}
-      ${totRow
-        ? `${tc(p(run(totRow[0],{bold:isTotal,sz:isTotal?12:9,color:WHITE,font:'Arial'}),{before:0,after:0}),{w:C_TOT,bg:NAVY})}
-           ${tc(p(run(totRow[1],{bold:isTotal,sz:isTotal?12:9,color:isTotal?ACCENT:WHITE,font:'Arial'}),{align:'right',before:0,after:0}),{w:C_TOT,bg:NAVY})}`
-        : `<w:tc><w:tcPr><w:tcW w:w="${C_TOT*2}" w:type="dxa"/><w:gridSpan w:val="2"/><w:tcBorders><w:top w:val="none" w:sz="0" w:color="auto"/><w:left w:val="none" w:sz="0" w:color="auto"/><w:bottom w:val="none" w:sz="0" w:color="auto"/><w:right w:val="none" w:sz="0" w:color="auto"/><w:insideH w:val="none" w:sz="0" w:color="auto"/><w:insideV w:val="none" w:sz="0" w:color="auto"/></w:tcBorders><w:shd w:val="clear" w:color="FFFFFF" w:fill="FFFFFF"/><w:vAlign w:val="center"/></w:tcPr><w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr></w:p></w:tc>`
-      }
-    </w:tr>`);
+    const gapCell = totRow === null
+      ? '<w:tc><w:tcPr><w:tcW w:w="' + C_GAP + '" w:type="dxa"/><w:tcBorders><w:top w:val="none" w:sz="0" w:color="auto"/><w:left w:val="none" w:sz="0" w:color="auto"/><w:bottom w:val="none" w:sz="0" w:color="auto"/><w:right w:val="none" w:sz="0" w:color="auto"/></w:tcBorders><w:shd w:val="clear" w:color="FFFFFF" w:fill="FFFFFF"/></w:tcPr><w:p/></w:tc>'
+      : tc(p('',{before:0,after:0}),{w:C_GAP,bg:WHITE,noLeft:true,noRight:true});
+    const totCells = totRow
+      ? tc(p(run(totRow[0],{bold:isTotal,sz:isTotal?12:9,color:WHITE,font:'Arial'}),{before:0,after:0}),{w:C_TOT,bg:NAVY}) +
+        tc(p(run(totRow[1],{bold:isTotal,sz:isTotal?12:9,color:isTotal?ACCENT:WHITE,font:'Arial'}),{align:'right',before:0,after:0}),{w:C_TOT,bg:NAVY})
+      : '<w:tc><w:tcPr><w:tcW w:w="' + (C_TOT*2) + '" w:type="dxa"/><w:gridSpan w:val="2"/><w:tcBorders><w:top w:val="none" w:sz="0" w:color="auto"/><w:left w:val="none" w:sz="0" w:color="auto"/><w:bottom w:val="none" w:sz="0" w:color="auto"/><w:right w:val="none" w:sz="0" w:color="auto"/></w:tcBorders><w:shd w:val="clear" w:color="FFFFFF" w:fill="FFFFFF"/></w:tcPr><w:p/></w:tc>';
+    footerRows.push(
+      '<w:tr><w:trPr><w:trHeight w:val="' + (isTotal?480:300) + '" w:hRule="atLeast"/></w:trPr>' +
+      tc(p(run(cRow[0],{bold:true,sz:8,font:'Arial'}),{before:0,after:0}),{w:C_LBL,bg:condBg}) +
+      tc(p(run(cRow[1]||'',{sz:8,font:'Arial'}),{before:0,after:0}),{w:C_VAL,bg:WHITE}) +
+      gapCell + totCells +
+      '</w:tr>'
+    );
   });
   
   body.push(tbl(footerRows,[C_LBL,C_VAL,C_GAP,C_TOT,C_TOT]));
