@@ -1216,16 +1216,17 @@ async function generateWord() {
   };
 
   // ── Table cell ──
-  const tc = (content, {w, bg, vAlign='center', noLeft, noRight}={}) => {
+  const tc = (content, {w, bg, vAlign='center', noLeft, noRight, span}={}) => {
     const wAttr = w ? `<w:tcW w:w="${w}" w:type="dxa"/>` : '';
     const shd = bg ? `<w:shd w:val="clear" w:color="auto" w:fill="${bg}"/>` : '';
     const mar = `<w:tcMar><w:top w:w="57" w:type="dxa"/><w:left w:w="115" w:type="dxa"/><w:bottom w:w="57" w:type="dxa"/><w:right w:w="115" w:type="dxa"/></w:tcMar>`;
     const va = `<w:vAlign w:val="${vAlign}"/>`;
+    const spanAttr = span ? `<w:gridSpan w:val="${span}"/>` : '';
     const bdr = noLeft||noRight ? `<w:tcBorders>
       ${noLeft?'<w:left w:val="none" w:sz="0" w:space="0" w:color="auto"/>':''}
       ${noRight?'<w:right w:val="none" w:sz="0" w:space="0" w:color="auto"/>':''}
     </w:tcBorders>` : '';
-    return `<w:tc><w:tcPr>${wAttr}${shd}${bdr}${va}${mar}</w:tcPr>${Array.isArray(content)?content.join(''):content}</w:tc>`;
+    return `<w:tc><w:tcPr>${wAttr}${spanAttr}${shd}${bdr}${va}${mar}</w:tcPr>${Array.isArray(content)?content.join(''):content}</w:tc>`;
   };
 
   // ── Table row ──
@@ -1233,19 +1234,22 @@ async function generateWord() {
     `<w:tr><w:trPr><w:trHeight w:val="${height}" w:hRule="atLeast"/></w:trPr>${cells.join('')}</w:tr>`;
 
   // ── Full table ──  
+  // ── Full table ──
   const tbl = (rows, cols, opts={}) => {
     const grid = cols.map(w=>`<w:gridCol w:w="${w}"/>`).join('');
+    const bColor = opts.bColor||'E8ECEF';
     const borders = `<w:tblBorders>
-      <w:top w:val="single" w:sz="4" w:space="0" w:color="${BORDER}"/>
-      <w:left w:val="single" w:sz="4" w:space="0" w:color="${BORDER}"/>
-      <w:bottom w:val="single" w:sz="4" w:space="0" w:color="${BORDER}"/>
-      <w:right w:val="single" w:sz="4" w:space="0" w:color="${BORDER}"/>
-      <w:insideH w:val="single" w:sz="4" w:space="0" w:color="${BORDER}"/>
-      <w:insideV w:val="single" w:sz="4" w:space="0" w:color="${BORDER}"/>
+      <w:top w:val="single" w:sz="6" w:space="0" w:color="${bColor}"/>
+      <w:left w:val="single" w:sz="6" w:space="0" w:color="${bColor}"/>
+      <w:bottom w:val="single" w:sz="6" w:space="0" w:color="${bColor}"/>
+      <w:right w:val="single" w:sz="6" w:space="0" w:color="${bColor}"/>
+      <w:insideH w:val="single" w:sz="6" w:space="0" w:color="${bColor}"/>
+      <w:insideV w:val="single" w:sz="6" w:space="0" w:color="${bColor}"/>
     </w:tblBorders>`;
     const totalW = cols.reduce((a,b)=>a+b,0);
     return `<w:tbl><w:tblPr>
-      <w:tblW w:w="${totalW}" w:type="dxa"/>
+      <w:tblW w:w="0" w:type="auto"/>
+      <w:jc w:val="left"/>
       ${borders}
       <w:tblLayout w:type="fixed"/>
       <w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/></w:tblCellMar>
@@ -1322,12 +1326,12 @@ async function generateWord() {
 
   // ── CLIENT TABLE ──
   body.push(tbl([
-    tr([lbl('Cliente:',1700), val(v('cl_empresa'),2835), lbl('N° cotización:',1700), val(v('cl_qt_num'),2835,WHITE)]),
-    tr([lbl('Contacto:',1700), val(v('cl_contacto'),2835,WHITE), lbl('Fecha:',1700), val(formatDate(v('cl_fecha')),2835)]),
-    tr([lbl('Teléfono:',1700), val(v('cl_telefono'),2835), lbl('Cond. de pago:',1700), val(v('cl_pago'),2835,WHITE)]),
-    tr([lbl('e-mail:',1700), val(v('cl_email'),2835,WHITE), lbl('Moneda:',1700), val(cur,2835)]),
-    tr([lbl('Dirección:',1700), tc(p(run(v('cl_direccion'),{sz:9,font:'Arial'}),{before:0,after:0}),{w:7370,bg:WHITE})]),
-  ],[1700,2835,1700,2835]));
+    tr([lbl('Cliente:',1800), val(v('cl_empresa'),3900), lbl('N° cotización:',1800), val(v('cl_qt_num'),2100,WHITE)]),
+    tr([lbl('Contacto:',1800), val(v('cl_contacto'),3900,WHITE), lbl('Fecha:',1800), val(formatDate(v('cl_fecha')),2100)]),
+    tr([lbl('Teléfono:',1800), val(v('cl_telefono'),3900), lbl('Cond. de pago:',1800), val(v('cl_pago'),2100,WHITE)]),
+    tr([lbl('e-mail:',1800), val(v('cl_email'),3900,WHITE), lbl('Moneda:',1800), val(cur,2100)]),
+    tr([lbl('Dirección:',1800), tc(p(run(v('cl_direccion'),{sz:9,font:'Arial'}),{before:0,after:0}),{w:7800,bg:WHITE,span:3})]),
+  ],[1800,3900,1800,2100]));
 
   body.push(p('',{before:80,after:0}));
   body.push(p(run('Automation and Projects X S.A agradece la confianza y tiene el agrado de presentar la siguiente oferta:',{italic:true,sz:9,color:GRAY,font:'Arial'}),{before:0,after:120}));
@@ -1382,35 +1386,52 @@ async function generateWord() {
     ['Elaborado por:',v('cl_elaborado')],
     ['Garantía:',v('cl_garantia')],
   ];
-  const condTbl = tbl([
-    tr([tc(p(run('Condiciones',{bold:true,sz:9,color:WHITE,font:'Arial'}),{before:0,after:0}),{w:5000,bg:NAVY})],[5000]),
-    ...condRows2.map((row,i)=>tr([
-      tc(p(run(row[0],{bold:true,sz:8,font:'Arial'}),{before:0,after:0}),{w:1800,bg:'F8F9FA'}),
-      tc(p(run(row[1]||'',{sz:8,font:'Arial'}),{before:0,after:0}),{w:3200,bg:WHITE}),
-    ],300)),
-  ],[1800,3200]);
-
-  const totTbl = tbl([
-    tr([tc(p(run('Sub total',{sz:9,color:WHITE,font:'Arial'}),{before:0,after:0}),{w:1985,bg:NAVY}),
-        tc(p(run(cur+' '+fmtNum(totalVenta,2),{sz:9,color:WHITE,font:'Arial'}),{align:'right',before:0,after:0}),{w:1985,bg:NAVY})],300),
-    tr([tc(p(run('I.V.A ('+Math.round(iva*100)+'%)',{sz:9,color:WHITE,font:'Arial'}),{before:0,after:0}),{w:1985,bg:NAVY}),
-        tc(p(run(cur+' '+fmtNum(ivaAmt,2),{sz:9,color:WHITE,font:'Arial'}),{align:'right',before:0,after:0}),{w:1985,bg:NAVY})],300),
-    tr([tc(p(run('Total',{bold:true,sz:12,color:WHITE,font:'Arial'}),{before:0,after:0}),{w:1985,bg:NAVY}),
-        tc(p(run(cur+' '+fmtNum(total,2),{bold:true,sz:12,color:ACCENT,font:'Arial'}),{align:'right',before:0,after:0}),{w:1985,bg:NAVY})],480),
-  ],[1985,1985]);
-
-  // Side-by-side footer
-  const footerTbl = `<w:tbl><w:tblPr>
-    <w:tblW w:w="9070" w:type="dxa"/>
-    <w:tblBorders><w:top w:val="none"/><w:left w:val="none"/><w:bottom w:val="none"/><w:right w:val="none"/><w:insideH w:val="none"/><w:insideV w:val="none"/></w:tblBorders>
-    <w:tblLayout w:type="fixed"/>
-  </w:tblPr><w:tblGrid><w:gridCol w:w="5000"/><w:gridCol w:w="100"/><w:gridCol w:w="3970"/></w:tblGrid>
-  <w:tr>
-    <w:tc><w:tcPr><w:tcW w:w="5000" w:type="dxa"/><w:tcBorders><w:top w:val="none"/><w:left w:val="none"/><w:bottom w:val="none"/><w:right w:val="none"/></w:tcBorders><w:vAlign w:val="top"/></w:tcPr>${condTbl}</w:tc>
-    <w:tc><w:tcPr><w:tcW w:w="100" w:type="dxa"/><w:tcBorders><w:top w:val="none"/><w:left w:val="none"/><w:bottom w:val="none"/><w:right w:val="none"/></w:tcBorders></w:tcPr><w:p/></w:tc>
-    <w:tc><w:tcPr><w:tcW w:w="3970" w:type="dxa"/><w:tcBorders><w:top w:val="none"/><w:left w:val="none"/><w:bottom w:val="none"/><w:right w:val="none"/></w:tcBorders><w:vAlign w:val="top"/></w:tcPr>${totTbl}</w:tc>
-  </w:tr></w:tbl>`;
-  body.push(footerTbl);
+  // ── FOOTER: Single wide table with conditions (left) + totals (right) ──
+  // Left side: label col + value col (each row of conditions)
+  // Right side: total amounts  
+  // Approach: one table, each row has [lbl, val, gap, lbl2, val2]
+  // Conditions rows + totals rows side by side using a 5-col table
+  
+  // Col widths: lbl=1800, val=3000, gap=200, tot_lbl=2035, tot_val=2035 = 9070
+  const C_LBL=1800, C_VAL=3000, C_GAP=200, C_TOT=2035;
+  
+  // Build combined footer table
+  const footerRows = [];
+  
+  // Header row: "Condiciones" | (blank gap) | (blank)
+  footerRows.push(`<w:tr><w:trPr><w:trHeight w:val="380" w:hRule="atLeast"/></w:trPr>
+    ${tc(p(run('Condiciones',{bold:true,sz:9,color:WHITE,font:'Arial'}),{before:0,after:0}),{w:C_LBL+C_VAL,bg:NAVY,span:2})}
+    ${tc(p('',{before:0,after:0}),{w:C_GAP,bg:WHITE,noLeft:true,noRight:true})}
+    ${tc(p(run('Sub total',{sz:9,color:WHITE,font:'Arial'}),{before:0,after:0}),{w:C_TOT,bg:NAVY})}
+    ${tc(p(run(cur+' '+fmtNum(totalVenta,2),{sz:9,color:WHITE,font:'Arial'}),{align:'right',before:0,after:0}),{w:C_TOT,bg:NAVY})}
+  </w:tr>`);
+  
+  // Remaining rows: cond + totals
+  const cond_tot = [
+    [condRows2[0], ['I.V.A ('+Math.round(iva*100)+'%)', cur+' '+fmtNum(ivaAmt,2)]],
+    [condRows2[1], ['Total', cur+' '+fmtNum(total,2), true]],
+    [condRows2[2], null],
+    [condRows2[3], null],
+    [condRows2[4], null],
+  ];
+  
+  cond_tot.forEach(([cRow, totRow], i) => {
+    const isTotal = totRow && totRow[2];
+    const condBg = i%2===0 ? 'F8F9FA' : WHITE;
+    footerRows.push(`<w:tr><w:trPr><w:trHeight w:val="${isTotal?480:300}" w:hRule="atLeast"/></w:trPr>
+      ${tc(p(run(cRow[0],{bold:true,sz:8,font:'Arial'}),{before:0,after:0}),{w:C_LBL,bg:condBg})}
+      ${tc(p(run(cRow[1]||'',{sz:8,font:'Arial'}),{before:0,after:0}),{w:C_VAL,bg:WHITE})}
+      ${tc(p('',{before:0,after:0}),{w:C_GAP,bg:WHITE,noLeft:true,noRight:true})}
+      ${totRow
+        ? `${tc(p(run(totRow[0],{bold:isTotal,sz:isTotal?12:9,color:WHITE,font:'Arial'}),{before:0,after:0}),{w:C_TOT,bg:NAVY})}
+           ${tc(p(run(totRow[1],{bold:isTotal,sz:isTotal?12:9,color:isTotal?ACCENT:WHITE,font:'Arial'}),{align:'right',before:0,after:0}),{w:C_TOT,bg:NAVY})}`
+        : `${tc(p('',{before:0,after:0}),{w:C_TOT,bg:WHITE,noLeft:true,noRight:true})}
+           ${tc(p('',{before:0,after:0}),{w:C_TOT,bg:WHITE,noLeft:true,noRight:true})}`
+      }
+    </w:tr>`);
+  });
+  
+  body.push(tbl(footerRows,[C_LBL,C_VAL,C_GAP,C_TOT,C_TOT]));
 
   // ── CLOSING MESSAGE ──
   if(v('cl_cierre')) {
